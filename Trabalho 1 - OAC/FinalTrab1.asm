@@ -46,16 +46,18 @@ INICIO:
 	##############################
 	addi t0, x0, 3
 	bne a0, t0, CONTINUA		#if(a0 == 3) PC = RETANGULOFULL
-	jal ra, REGANTULOFULL			
+	jal ra, RETANGULO_FULL			
 	j INICIO			#Volta para o menu incial
 CONTINUA:	
 	##############################
 	## Testando se eh igual a 4 ##
 	##############################
 	addi t0, x0, 4
-	bne a0, t0, CONTINUA1 		#if(a0 == 4) PC = RETANGULOFULL
+	bne a0, t0, CONTINUA_1 		#if(a0 == 4) PC = RETANGULOFULL
+	jal ra, RETANGULO_FULL
 	jal ra, RETANGULO_S_PREENC	#Pinta a parte de dentro do retangulo
-CONTINUA1:
+	j INICIO			#Volta para o menu incial
+CONTINUA_1:
 	##############################
 	## Testando se eh igual a 8 ##
 	##############################
@@ -139,7 +141,7 @@ DESENHAPONTO:				#Para quando nao precisar ler as informacoes acima
 #########################################################################
 #########################################################################
 
-REGANTULOFULL:
+RETANGULO_FULL:
 
 	jal ra, LE_X_Y_COMPOSTO		#ra = PC, PC = LE_X_Y_COMPOSTO
 	
@@ -172,14 +174,14 @@ LOOP_RET_FULL_X:
 
 RETANGULO_S_PREENC:
 	
-	addi t0, s3, 0
-	addi t1, s4, 0
-	addi s10, s5, 0
-	addi s1, s6, 0
+	addi t0, s3, 0			#Recupera o valor inicial de X1
+	addi t1, s4, 0			#Recupera o valor inicial de Y1
+	addi s10, s5, 0			#Recupera o valor inicial de X2
+	addi s1, s6, 0			#Recupera o valor inicial de Y2
 	
-	add s11, x0, t0			#Salva a posicao inicial de x1
+	add s11, x0, t0			#Salva a posicao inicial de X1
 	
-	lw t3, cor_base			#t3 = cor_base
+	add s0, x0, x0			#s0 = preto
 
 LOOP_RET_S_PREENC_Y:			#Colunas
 		
@@ -323,8 +325,8 @@ VE_X:
 
 	blt s10, t0, TROCA_X		#Se x2 < x1 chama a funcao de trocar
 	
-	addi s3, t0, 1			#s3 = x1; retangulo borda 
-	addi s5, s10, -1		#s5 = x2; retangulo borda
+	addi s3, t0, 1			#s3 = x1+1; Salva o X1 
+	addi s5, s10, -1		#s5 = x2-1; Salva o X2
 	
 	jr ra				#Retorna para a funcao que a chamou
 	
@@ -340,8 +342,8 @@ VE_Y:
 	
 	blt s1, t1, TROCA_Y		#Se y2 < y1 chama a funcao de trocar
 	
-	addi s4, t1, 1			#s4 = y1; retangulo borda
-	addi s6, s1, -1			#s6 = y2; retangulo borda
+	addi s4, t1, 1			#s4 = y1+1; Salva o Y1
+	addi s6, s1, -1			#s6 = y2-1; Salva o Y2
 	
 	jr ra				#Retorna para a funcao que a chamou
 	
