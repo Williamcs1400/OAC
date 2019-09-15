@@ -37,7 +37,7 @@ INICIO:
 	
 ERRO_MENU:	
 	li a7, 4
-	la a0, interacao_err		#Imprime mensagem de erro
+	la a0, interacao_err			#Imprime mensagem de erro
 	ecall
 	j INICIO
 	
@@ -48,32 +48,32 @@ CONTINUA:
 	##############################
 	## Testando se eh igual a 1 ##
 	##############################
-	addi t0, x0, 1			#t0 = 1
-	beq a0, t0, OBTEMPONTOCOMECO	#if(a0 == 1) PC = OBTEMPONTO
+	addi t0, x0, 1				#t0 = 1
+	beq a0, t0, OBTEMPONTOCOMECO		#if(a0 == 1) PC = OBTEMPONTO
 	
 	##############################
 	## Testando se eh igual a 2 ##
 	##############################
 	addi t0, x0, 2
-	beq a0, t0, DESENHAPONTOCOMECO	#if(a0 == 2) PC = DESENHAPONTO
+	beq a0, t0, DESENHAPONTOCOMECO		#if(a0 == 2) PC = DESENHAPONTO
 	
 	##############################
 	## Testando se eh igual a 3 ##
 	##############################
 	addi t0, x0, 3
-	beq a0, t0, REGANTULOFULL	#if(a0 == 3) PC = RETANGULOFULL
+	beq a0, t0, REGANTULOFULL		#if(a0 == 3) PC = RETANGULOFULL
 	
 	##############################
 	## Testando se eh igual a 4 ##
 	##############################
 	addi t0, x0, 4
-	beq a0, t0, RETANGULO_S_PREENC	#if(a0 == 4) PC = RETANGULO_S_PREENC
+	beq a0, t0, RETANGULO_S_PREENC		#if(a0 == 4) PC = RETANGULO_S_PREENC
 	
 	##############################
 	## Testando se eh igual a 8 ##
 	##############################
 	addi t0, x0, 8
-	beq a0, t0, ENCERRA 		#if(a0 == 8) Encerra o programa
+	beq a0, t0, ENCERRA 			#if(a0 == 8) Encerra o programa
 	
 ################################################################################
 ################################################################################
@@ -84,30 +84,30 @@ CONTINUA:
 ################################################################################
 
 OBTEMPONTOCOMECO: 
-	jal ra, LE_X_Y_SIMPLES		#ra = PC, PC = LE_X_Y_SIMPLES
+	jal ra, LE_X_Y_SIMPLES			#ra = PC, PC = LE_X_Y_SIMPLES
 	
 	#Operacoes aritmeticas para mostrar no bitmap
 	
-	addi t2, x0, 4			#t2 = 4
-	mul t0, t0, t2			#Multiplica o valor de x por 4
-	addi t2, x0, 256		#t2 = 256
-	mul t1, t1, t2			#Multiplica o valor de y por 256
+	addi t2, x0, 4				#t2 = 4
+	mul t0, t0, t2				#Multiplica o valor de x por 4
+	addi t2, x0, 256			#t2 = 256
+	mul t1, t1, t2				#Multiplica o valor de y por 256
 	
-	addi t2, x0, -1			#t2 = -1
-	mul t1, t1, t2			#Faz o valor de y ficar negativo
+	addi t2, x0, -1				#t2 = -1
+	mul t1, t1, t2				#Faz o valor de y ficar negativo
+		
+	lw t3, endereco_base			#t3 = endereco_base
+	add t3, t3, t0				#t3 += t0 ou x
+	add t3, t3, t1				#t3 -= t1 ou y
 	
-	lw t3, endereco_base		#t3 = endereco_base
-	add t3, t3, t0			#t3 += t0 ou x
-	add t3, t3, t1			#t3 -= t1 ou y
-	
-	lw s0, 0(t3)			#Le a cor da posicao do endereco de t3
+	lw s0, 0(t3)				#Le a cor da posicao do endereco de t3
 	
 	#Instrucoes para imprimir o valor RGB na tela
 	li a7, 1
 	add a0, x0, s0
 	ecall
 	
-	beq x0, x0, INICIO		#Volta para o menu incial
+	beq x0, x0, INICIO			#Volta para o menu incial
 
 ################################################################################
 ################################################################################
@@ -115,38 +115,38 @@ OBTEMPONTOCOMECO:
 
 DESENHAPONTOCOMECO:
 
-	jal ra, LE_X_Y_SIMPLES		#ra = PC, PC = LE_X_Y_SIMPLES
+	jal ra, LE_X_Y_SIMPLES			#ra = PC, PC = LE_X_Y_SIMPLES
 	
-	jal ra, LE_RGB			#ra = PC, PC = LE_RGB
+	jal ra, LE_RGB				#ra = PC, PC = LE_RGB
 	
-	jal ra, DESENHAPONTO		#Para saber que eh pra voltar para o menu
+	jal ra, DESENHAPONTO			#Para saber que eh pra voltar para o menu
 	
-	beq x0, x0, INICIO		#Volta para o menu incial
+	beq x0, x0, INICIO			#Volta para o menu incial
 
 ################################################################################
 ################################################################################
 ################################################################################
 	
-DESENHAPONTO:				#Para quando nao precisar ler as informacoes acima
+DESENHAPONTO:					#Para quando nao precisar ler as informacoes acima
 
 	#Operacoes aritmeticas para mostrar no bitmap
 	
-	addi t2, x0, 4			#t2 = 4
-	mul t0, t0, t2			#Multiplica o valor de x por 4
-	addi t2, x0, 256		#t2 = 256
-	mul t1, t1, t2			#Multiplica o valor de y por 256
+	addi t2, x0, 4				#t2 = 4
+	mul t0, t0, t2				#Multiplica o valor de x por 4
+	addi t2, x0, 256			#t2 = 256
+	mul t1, t1, t2				#Multiplica o valor de y por 256
 	
-	addi t2, x0, -1			#t2 = -1
-	mul t1, t1, t2			#Faz o valor de y ficar negativo
+	addi t2, x0, -1				#t2 = -1
+	mul t1, t1, t2				#Faz o valor de y ficar negativo
 	
-	lw t3, endereco_base		#t3 = endereco_base
-	add t3, t3, t0			#t3 += t0 ou x
-	add t3, t3, t1			#t3 -= t1 ou y
+	lw t3, endereco_base			#t3 = endereco_base
+	add t3, t3, t0				#t3 += t0 ou x
+	add t3, t3, t1				#t3 -= t1 ou y
 	
 	
-	sw s0, 0(t3)			#Printa para o usuario inserir x1
-	
-	jr ra				#Retorna para a funcao que a chamou
+	sw s0, 0(t3)				#Printa para o usuario inserir x1
+		
+	jr ra					#Retorna para a funcao que a chamou
 
 ################################################################################
 ################################################################################
@@ -154,27 +154,27 @@ DESENHAPONTO:				#Para quando nao precisar ler as informacoes acima
 
 REGANTULOFULL:
 
-	jal ra, LE_X_Y_COMPOSTO		#ra = PC, PC = LE_X_Y_COMPOSTO
+	jal ra, LE_X_Y_COMPOSTO			#ra = PC, PC = LE_X_Y_COMPOSTO
 	
 	#Funcoes para ver se x1 e y2 < x2 e y2, caso contrario trocam
-	jal ra, VE_X			#ra = PC, PC = VE_X
-	jal ra, VE_Y			#ra = PC, PC = VE_Y
+	jal ra, VE_X				#ra = PC, PC = VE_X
+	jal ra, VE_Y				#ra = PC, PC = VE_Y
 	
-	jal ra, LE_RGB			#ra = PC, PC = LE_RGB
+	jal ra, LE_RGB				#ra = PC, PC = LE_RGB
 
 	add s7, x0, t1
-	add s11, x0, t0			#Salva a posicao inicial de x1
+	add s11, x0, t0				#Salva a posicao inicial de x1
 	
 	
-LOOP_RET_FULL_Y:			#Linhas	
+LOOP_RET_FULL_Y:				#Linhas	
 
-	LOOP_RET_FULL_X:		#Colunas
+	LOOP_RET_FULL_X:			#Colunas
 	
-		jal ra, DESENHAPONTO	#ra = PC, PC = DESENHAPONTO
-		srli t0, t0, 2		#Divide x1 por 4
-		addi t0, t0, 1		#Pula para o proximo valor de x
-		neg t1, t1		#t1 *= -1
-		srli t1, t1, 8		#Divide x1 por 256
+		jal ra, DESENHAPONTO		#ra = PC, PC = DESENHAPONTO
+		srli t0, t0, 2			#Divide x1 por 4
+		addi t0, t0, 1			#Pula para o proximo valor de x
+		neg t1, t1			#t1 *= -1
+		srli t1, t1, 8			#Divide x1 por 256
 		ble t0, s10, LOOP_RET_FULL_X	
 		add t0, x0, s11
 		addi t1, t1, 1
@@ -188,48 +188,48 @@ LOOP_RET_FULL_Y:			#Linhas
 
 RETANGULO_S_PREENC:
 
-	jal ra, LE_X_Y_COMPOSTO		#ra = PC, PC = LE_X_Y_COMPOSTO
+	jal ra, LE_X_Y_COMPOSTO			#ra = PC, PC = LE_X_Y_COMPOSTO
 	
 	#Funcoes para ver se x1 e y2 < x2 e y2, caso contrario trocam
-	jal ra, VE_X			#ra = PC, PC = VE_X
-	jal ra, VE_Y			#ra = PC, PC = VE_Y
+	jal ra, VE_X				#ra = PC, PC = VE_X
+	jal ra, VE_Y				#ra = PC, PC = VE_Y
 	
-	jal ra, LE_RGB			#ra = PC, PC = LE_RGB
+	jal ra, LE_RGB				#ra = PC, PC = LE_RGB
 
 	add s7, x0, t1
-	add s11, x0, t0			#Salva a posicao inicial de x1
+	add s11, x0, t0				#Salva a posicao inicial de x1
 	
-LOOP_RET_S_Y:				#Linhas
+LOOP_RET_S_Y:					#Linhas
 
-	LOOP_RET_S_X:			#Colunas
+	LOOP_RET_S_X:				#Colunas
 	
-		jal ra, DESENHAPONTO	#ra = PC, PC = DESENHAPONTO
-		srli t0, t0, 2		#Divide x1 por 4
-		addi t0, t0, 1		#Pula para o proximo valor de x
-		neg t1, t1		#t1 *= -1
-		srli t1, t1, 8		#Divide x1 por 256
+		jal ra, DESENHAPONTO		#ra = PC, PC = DESENHAPONTO
+		srli t0, t0, 2			#Divide x1 por 4
+		addi t0, t0, 1			#Pula para o proximo valor de x
+		neg t1, t1			#t1 *= -1
+		srli t1, t1, 8			#Divide x1 por 256
 		ble t0, s10, LOOP_RET_S_X
 		add t0, x0, s11
 		addi t1, t1, 1
 		ble t1, s1, LOOP_RET_S_Y
 	
 	#redefinição das posicoes para pintar de preto dentro do retangulo 
-	addi t0, s11, 1			#x1 += 1
-	addi t1, s7, 1			#y1 += 1
-	addi s10, s10, -1		#x2 -= 1
-	addi s1, s1, -1			#y2 -= 1
-	add s11, t0, x0			#Salva a posicao inicial de x1
-	li s0, 0x00000000		#Pinta de preto a parte de dentro do retangulo
+	addi t0, s11, 1				#x1 += 1
+	addi t1, s7, 1				#y1 += 1
+	addi s10, s10, -1			#x2 -= 1
+	addi s1, s1, -1				#y2 -= 1
+	add s11, t0, x0				#Salva a posicao inicial de x1
+	li s0, 0x00000000			#Pinta de preto a parte de dentro do retangulo
 	
-LOOP_RET_S1_Y:				#Linhas 
+LOOP_RET_S1_Y:					#Linhas 
 	
-	LOOP_RET_S1_X:			#Colunas
+	LOOP_RET_S1_X:				#Colunas
 	
-		jal ra, DESENHAPONTO	#ra = PC, PC = DESENHAPONTO
-		srli t0, t0, 2		#Divide x1 por 4
-		addi t0, t0, 1		#Pula para o proximo valor de x
-		neg t1, t1		#t1 *= -1
-		srli t1, t1, 8		#Divide x1 por 256
+		jal ra, DESENHAPONTO		#ra = PC, PC = DESENHAPONTO
+		srli t0, t0, 2			#Divide x1 por 4
+		addi t0, t0, 1			#Pula para o proximo valor de x
+		neg t1, t1			#t1 *= -1
+		srli t1, t1, 8			#Divide x1 por 256
 		ble t0, s10, LOOP_RET_S1_X
 		add t0, x0, s11
 		addi t1, t1, 1
@@ -242,7 +242,7 @@ LOOP_RET_S1_Y:				#Linhas
 
 ERRO_COORD_SIMPLES:
 	li a7, 4
-	la a0, interacao_err		#Imprime mensagem de erro
+	la a0, interacao_err			#Imprime mensagem de erro
 	ecall
 	j LE_X_Y_SIMPLES
 
@@ -250,7 +250,7 @@ ERRO_COORD_SIMPLES:
 ################################################################################
 ################################################################################
 
-LE_X_Y_SIMPLES:				#Le as cordenadas X e Y 
+LE_X_Y_SIMPLES:					#Le as cordenadas X e Y 
 	
 	#Printa para o usuario inserir x
 	li a7, 4
@@ -262,11 +262,11 @@ LE_X_Y_SIMPLES:				#Le as cordenadas X e Y
 	ecall
 	
 	#Verifica os valor da coordena X
-	blt a0, x0, ERRO_COORD_SIMPLES 	#Se x < 0, ERRO
-	addi t0, x0, 64			#t0 = 64
-	bge a0, t0, ERRO_COORD_SIMPLES	#Se x > t0, ERRO
+	blt a0, x0, ERRO_COORD_SIMPLES 		#Se x < 0, ERRO
+	addi t0, x0, 64				#t0 = 64
+	bge a0, t0, ERRO_COORD_SIMPLES		#Se x > t0, ERRO
 	
-	add t0, a0, x0			#Salva o valor de x em t0
+	add t0, a0, x0				#Salva o valor de x em t0
 	
 	#Printa para o usuario inserir y
 	li a7, 4
@@ -278,13 +278,13 @@ LE_X_Y_SIMPLES:				#Le as cordenadas X e Y
 	ecall
 	
 	#Verifica os valor da coordena Y
-	blt a0, x0, ERRO_COORD_SIMPLES	#Se y < 0, ERRO
-	addi t1, x0, 64			#t1 = 64
-	bge a0, t1, ERRO_COORD_SIMPLES	#Se y > t1, ERRO
+	blt a0, x0, ERRO_COORD_SIMPLES		#Se y < 0, ERRO
+	addi t1, x0, 64				#t1 = 64
+	bge a0, t1, ERRO_COORD_SIMPLES		#Se y > t1, ERRO
 	
-	add t1, a0, x0			#Salva o valor de y em t1
+	add t1, a0, x0				#Salva o valor de y em t1
 	
-	jr ra				#Retorna para a funcao que a chamou
+	jr ra					#Retorna para a funcao que a chamou
 	
 ################################################################################
 ################################################################################
@@ -292,7 +292,7 @@ LE_X_Y_SIMPLES:				#Le as cordenadas X e Y
 
 ERRO_COORD_COMPOSTO:
 	li a7, 4
-	la a0, interacao_err		#Imprime mensagem de erro
+	la a0, interacao_err			#Imprime mensagem de erro
 	ecall
 	j LE_X_Y_COMPOSTO
 
@@ -312,9 +312,9 @@ LE_X_Y_COMPOSTO:
 	ecall
 	
 	#Verifica os valor da coordena X1
-	blt a0, x0, ERRO_COORD_COMPOSTO	#Se x1 < 0, ERRO
-	addi t0, x0, 64			#t0 = 64
-	bge a0, t0, ERRO_COORD_COMPOSTO	#Se x1 > t0, ERRO
+	blt a0, x0, ERRO_COORD_COMPOSTO		#Se x1 < 0, ERRO
+	addi t0, x0, 64				#t0 = 64
+	bge a0, t0, ERRO_COORD_COMPOSTO		#Se x1 > t0, ERRO
 	
 	add t0, a0, x0
 	
@@ -328,9 +328,9 @@ LE_X_Y_COMPOSTO:
 	ecall
 	
 	#Verifica os valor da coordena Y1
-	blt a0, x0, ERRO_COORD_COMPOSTO	#Se y1 < 0, ERRO
-	addi t1, x0, 64			#t1 = 64
-	bge a0, t1, ERRO_COORD_COMPOSTO	#Se y1 > t1, ERRO
+	blt a0, x0, ERRO_COORD_COMPOSTO		#Se y1 < 0, ERRO
+	addi t1, x0, 64				#t1 = 64
+	bge a0, t1, ERRO_COORD_COMPOSTO		#Se y1 > t1, ERRO
 	
 	add t1, a0, x0
 	
@@ -344,9 +344,9 @@ LE_X_Y_COMPOSTO:
 	ecall
 	
 	#Verifica os valor da coordena X2
-	blt a0, x0, ERRO_COORD_COMPOSTO	#Se x2 < 0, ERRO
-	addi s10, x0, 64		#s10 = 64
-	bge a0, s10, ERRO_COORD_COMPOSTO#Se x2 > s10, ERRO
+	blt a0, x0, ERRO_COORD_COMPOSTO		#Se x2 < 0, ERRO
+	addi s10, x0, 64			#s10 = 64
+	bge a0, s10, ERRO_COORD_COMPOSTO	#Se x2 > s10, ERRO
 	
 	add s10, a0, x0
 	
@@ -360,86 +360,118 @@ LE_X_Y_COMPOSTO:
 	ecall
 	
 	#Verifica os valor da coordena Y2
-	blt a0, x0, ERRO_COORD_COMPOSTO	#Se y2 < 0, ERRO
-	addi s1, x0, 64			#s1 = 64
-	bge a0, s1, ERRO_COORD_COMPOSTO	#Se y2 > s1, ERRO
+	blt a0, x0, ERRO_COORD_COMPOSTO		#Se y2 < 0, ERRO
+	addi s1, x0, 64				#s1 = 64
+	bge a0, s1, ERRO_COORD_COMPOSTO		#Se y2 > s1, ERRO
 	
 	add s1, a0, x0
 	
-	jr ra				#Retorna para a funcao que a chamou
+	jr ra					#Retorna para a funcao que a chamou
 	
 ################################################################################
 ################################################################################
 ################################################################################
 
-LE_RGB:					#Le 3 numeros de 0 a 255 para e retorna uma cor RGB
+LE_RGB:					
+	#Le 3 numeros de 0 a 255 para e retorna uma cor RGB
+	lw t3, cor_base				#t3 = cor_base
 	
-	lw t3, cor_base			#t3 = cor_base
-	
+	#Printa para o usuario inserir o vermelho
 	li a7, 4
-	la a0, interacao_r
+	la a0, interacao_r	
 	ecall
 	
+	#Le um numero inteiro e salva em t4
 	li a7, 5
 	ecall
 	
-	add t4, a0, x0			#t4 = valor de red
-	slli t4, t4, 16			#Desloca o valor de t4 16 bits para a esquerda
-	add t3, t3, t4			#t3 += t4
+	#Verifica os valor do Vermelho
+	blt a0, x0, ERRO_RGB			#Se a0 < 0, ERRO
+	addi t4, x0, 255			#t4 = 255
+	bge a0, t4, ERRO_RGB			#Se a0 > t4, ERRO
 	
+	add t4, a0, x0				#t4 = valor de red
+	slli t4, t4, 16				#Desloca o valor de t4 16 bits para a esquerda
+	add t3, t3, t4				#t3 += t4
+	
+	#Printa para o usuario inserir o verde
 	li a7, 4
 	la a0, interacao_g
 	ecall
 	
+	#Le um numero inteiro e salva em t5
 	li a7, 5
 	ecall
 	
-	add t5, a0, x0			#t5 = valor de gree
-	slli t5, t5, 8			#Desloca o valor de t5 8 bits para esquerda
-	add t3, t3, t5			#t3 += t5
+	#Verifica os valor do Verde
+	blt a0, x0, ERRO_RGB			#Se a0 < 0, ERRO
+	addi t5, x0, 255			#t5 = 255
+	bge a0, t5, ERRO_RGB			#Se a0 > t5, ERRO
 	
+	add t5, a0, x0				#t5 = valor de gree
+	slli t5, t5, 8				#Desloca o valor de t5 8 bits para esquerda
+	add t3, t3, t5				#t3 += t5
+	
+	#Printa para o usuario inserir o azul
 	li a7, 4
 	la a0, interacao_b
 	ecall
 	
+	#Le um numero inteiro e salva em t6
 	li a7, 5
 	ecall
-	add t6, a0, x0			#t6 = valor de blue
-	add s0, t3, t6			#s0 = t3 + t6
 	
-	jr ra				#Retorna para a funcao que a chamou
+	#Verifica os valor do Verde
+	blt a0, x0, ERRO_RGB			#Se a0 < 0, ERRO
+	addi t6, x0, 255			#t6 = 255
+	bge a0, t6, ERRO_RGB			#Se a0 > t6, ERRO
+
+	add t6, a0, x0				#t6 = valor de blue
+	add s0, t3, t6				#s0 = t3 + t6
 	
+	jr ra					#Retorna para a funcao que a chamou
+	
+################################################################################
+################################################################################
+################################################################################
+
+ERRO_RGB:
+	li a7, 4
+	la a0, interacao_err			#Imprime mensagem de erro
+	ecall
+	j LE_RGB
+
 ################################################################################
 ################################################################################
 ################################################################################
 
 VE_X:
 
-	blt s10, t0, TROCA_X		#Se x1 < x2 chama a funcao de trocar
+	blt s10, t0, TROCA_X			#Se x1 < x2 chama a funcao de trocar
 	
-	jr ra				#Retorna para a funcao que a chamou
+	jr ra					#Retorna para a funcao que a chamou
 	
 TROCA_X:
 	
-	add t3, t0, x0			#t3 = t0
-	mv t0, s10			#t0 = s10
-	mv s10, t3			#t1 = t3
+	add t3, t0, x0				#t3 = t0
+	mv t0, s10				#t0 = s10
+	mv s10, t3				#t1 = t3
 	
-	jr ra				#Retorna para a funcao que a chamou
+	jr ra					#Retorna para a funcao que a chamou
 	
 VE_Y:
 	
-	blt s1, t1, TROCA_Y		#Se y1 < y2 chama a funcao de trocar
+	blt s1, t1, TROCA_Y			#Se y1 < y2 chama a funcao de trocar
 	
-	jr ra				#Retorna para a funcao que a chamou
+	jr ra					#Retorna para a funcao que a chamou
 	
 TROCA_Y:
 	
-	add t3, t1, x0			#t3 = t1
-	mv t1, s1			#t1 = s1
-	mv s1, t3			#s1 = t3
+	add t3, t1, x0				#t3 = t1
+	mv t1, s1				#t1 = s1
+	mv s1, t3				#s1 = t3
 	
-	jr ra				#Retorna para a funcao que a chamou
+	jr ra					#Retorna para a funcao que a chamou
 	
 				
 ################################################################################
