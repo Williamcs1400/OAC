@@ -387,7 +387,7 @@ LE_RGB:
 	
 	#Verifica os valor do Vermelho
 	blt a0, x0, ERRO_RGB			#Se a0 < 0, ERRO
-	addi t4, x0, 255			#t4 = 255
+	addi t4, x0, 256			#t4 = 256
 	bge a0, t4, ERRO_RGB			#Se a0 > t4, ERRO
 	
 	add t4, a0, x0				#t4 = valor de red
@@ -405,7 +405,7 @@ LE_RGB:
 	
 	#Verifica os valor do Verde
 	blt a0, x0, ERRO_RGB			#Se a0 < 0, ERRO
-	addi t5, x0, 255			#t5 = 255
+	addi t5, x0, 256			#t5 = 256
 	bge a0, t5, ERRO_RGB			#Se a0 > t5, ERRO
 	
 	add t5, a0, x0				#t5 = valor de gree
@@ -423,7 +423,7 @@ LE_RGB:
 	
 	#Verifica os valor do Verde
 	blt a0, x0, ERRO_RGB			#Se a0 < 0, ERRO
-	addi t6, x0, 255			#t6 = 255
+	addi t6, x0, 256			#t6 = 256
 	bge a0, t6, ERRO_RGB			#Se a0 > t6, ERRO
 
 	add t6, a0, x0				#t6 = valor de blue
