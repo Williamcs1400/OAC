@@ -2,18 +2,18 @@
 	menu:	       .asciz "\nMENU:\n	1.Obtem ponto\n	2.Desenha ponto\n	3.Desenha retangulo com preenchimento\n	4.Desenha retangulo sem preenchimento\n	5.Converte para negativo da imagem\n	6.Converte imagem para tons de vermelho\n	7.Carrega imagem\n	8.Encerra\n\nDigite a opcao desejada:\n"
 	cor_base:      .word 0x0000000	#Para inserir a cor desejada pelo o usuario
 	endereco_base: .word 0x10043f00	#Ultima linha e primeira coluna do bitmap
-	interacao_x:   .asciz "Escreva o valor de x: "
-	interacao_y:   .asciz "Escreva o valor de y: "
-	interacao_x1:  .asciz "Escreva o valor de x1: "
-	interacao_y1:  .asciz "Escreva o valor de y1: "
-	interacao_x2:  .asciz "Escreva o valor de x2: " 
-	interacao_y2:  .asciz "Escreva o valor de y2: "
+	interacao_x:   .asciz "Escreva o valor entre 0 e 63 para X: "
+	interacao_y:   .asciz "Escreva o valor entre 0 e 63 para Y: "
+	interacao_x1:  .asciz "Escreva o valor entre 0 e 63 para X1: "
+	interacao_y1:  .asciz "Escreva o valor entre 0 e 63 para Y1: "
+	interacao_x2:  .asciz "Escreva o valor entre 0 e 63 para X2: " 
+	interacao_y2:  .asciz "Escreva o valor enrte 0 e 63 para Y2: "
 	
 	interacao_r:   .asciz "Escreva um valor entre 0 e 255 para Red: "
 	interacao_g:   .asciz "Escreva um valor entre 0 e 255 para Gree: "
 	interacao_b:   .asciz "Escreva um valor entre 0 e 255 para Blue: "
 	
-	interacao_err: .asciz "ERRO! Digite um valor valido: "
+	interacao_err: .asciz "\nERRO! Por favor, digite um valor valido! \n\n"
 .text
 INICIO:
 	############################
@@ -35,7 +35,7 @@ INICIO:
 	addi t0, x0, 1	
 	bge a0, t0, CONTINUA
 	
-ERRO:	
+ERRO_MENU:	
 	li a7, 4
 	la a0, interacao_err		#Imprime mensagem de erro
 	ecall
@@ -43,7 +43,7 @@ ERRO:
 	
 CONTINUA:	
 	addi t0, x0, 9
-	bge a0, t0, ERRO
+	bge a0, t0, ERRO_MENU
 		
 	##############################
 	## Testando se eh igual a 1 ##
@@ -143,8 +143,8 @@ DESENHAPONTO:				#Para quando nao precisar ler as informacoes acima
 	add t3, t3, t0			#t3 += t0 ou x
 	add t3, t3, t1			#t3 -= t1 ou y
 	
-	#Instrucao para mostrar no bitmap
-	sw s0, 0(t3)
+	
+	sw s0, 0(t3)			#Printa para o usuario inserir x1
 	
 	jr ra				#Retorna para a funcao que a chamou
 
@@ -240,6 +240,16 @@ LOOP_RET_S1_Y:				#Linhas
 ################################################################################
 ################################################################################
 
+ERRO_COORD_SIMPLES:
+	li a7, 4
+	la a0, interacao_err		#Imprime mensagem de erro
+	ecall
+	j LE_X_Y_SIMPLES
+
+################################################################################
+################################################################################
+################################################################################
+
 LE_X_Y_SIMPLES:				#Le as cordenadas X e Y 
 	
 	#Printa para o usuario inserir x
@@ -250,6 +260,11 @@ LE_X_Y_SIMPLES:				#Le as cordenadas X e Y
 	#Le um numero inteiro
 	li a7, 5	
 	ecall
+	
+	#Verifica os valor da coordena X
+	blt a0, x0, ERRO_COORD_SIMPLES 	#Se x < 0, ERRO
+	addi t0, x0, 64			#t0 = 64
+	bge a0, t0, ERRO_COORD_SIMPLES	#Se x > t0, ERRO
 	
 	add t0, a0, x0			#Salva o valor de x em t0
 	
@@ -262,6 +277,11 @@ LE_X_Y_SIMPLES:				#Le as cordenadas X e Y
 	li a7, 5	
 	ecall
 	
+	#Verifica os valor da coordena Y
+	blt a0, x0, ERRO_COORD_SIMPLES	#Se y < 0, ERRO
+	addi t1, x0, 64			#t1 = 64
+	bge a0, t1, ERRO_COORD_SIMPLES	#Se y > t1, ERRO
+	
 	add t1, a0, x0			#Salva o valor de y em t1
 	
 	jr ra				#Retorna para a funcao que a chamou
@@ -269,7 +289,17 @@ LE_X_Y_SIMPLES:				#Le as cordenadas X e Y
 ################################################################################
 ################################################################################
 ################################################################################
-	
+
+ERRO_COORD_COMPOSTO:
+	li a7, 4
+	la a0, interacao_err		#Imprime mensagem de erro
+	ecall
+	j LE_X_Y_COMPOSTO
+
+################################################################################
+################################################################################
+################################################################################
+
 LE_X_Y_COMPOSTO:
 	
 	#Printa para o usuario inserir x1
@@ -280,6 +310,12 @@ LE_X_Y_COMPOSTO:
 	#Le um numero inteiro e salva em t0
 	li a7, 5
 	ecall
+	
+	#Verifica os valor da coordena X1
+	blt a0, x0, ERRO_COORD_COMPOSTO	#Se x1 < 0, ERRO
+	addi t0, x0, 64			#t0 = 64
+	bge a0, t0, ERRO_COORD_COMPOSTO	#Se x1 > t0, ERRO
+	
 	add t0, a0, x0
 	
 	#Printa para o usuario inserir y1
@@ -290,6 +326,12 @@ LE_X_Y_COMPOSTO:
 	#Le um numero inteiro e salva em t1
 	li a7, 5
 	ecall
+	
+	#Verifica os valor da coordena Y1
+	blt a0, x0, ERRO_COORD_COMPOSTO	#Se y1 < 0, ERRO
+	addi t1, x0, 64			#t1 = 64
+	bge a0, t1, ERRO_COORD_COMPOSTO	#Se y1 > t1, ERRO
+	
 	add t1, a0, x0
 	
 	#Printa para o usuario inserir x2
@@ -300,6 +342,12 @@ LE_X_Y_COMPOSTO:
 	#Le um numero inteiro e salva em s10
 	li a7, 5
 	ecall
+	
+	#Verifica os valor da coordena X2
+	blt a0, x0, ERRO_COORD_COMPOSTO	#Se x2 < 0, ERRO
+	addi s10, x0, 64		#s10 = 64
+	bge a0, s10, ERRO_COORD_COMPOSTO#Se x2 > s10, ERRO
+	
 	add s10, a0, x0
 	
 	#Printa para o usuario inserir y2
@@ -310,6 +358,12 @@ LE_X_Y_COMPOSTO:
 	#Le um numero inteiro e salva em s1
 	li a7, 5
 	ecall
+	
+	#Verifica os valor da coordena Y2
+	blt a0, x0, ERRO_COORD_COMPOSTO	#Se y2 < 0, ERRO
+	addi s1, x0, 64			#s1 = 64
+	bge a0, s1, ERRO_COORD_COMPOSTO	#Se y2 > s1, ERRO
+	
 	add s1, a0, x0
 	
 	jr ra				#Retorna para a funcao que a chamou
