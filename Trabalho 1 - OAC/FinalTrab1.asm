@@ -12,6 +12,8 @@
 	interacao_r:   .asciz "Escreva um valor entre 0 e 255 para Red: "
 	interacao_g:   .asciz "Escreva um valor entre 0 e 255 para Gree: "
 	interacao_b:   .asciz "Escreva um valor entre 0 e 255 para Blue: "
+	
+	interacao_err: .asciz "ERRO! Digite um valor valido: "
 .text
 INICIO:
 	############################
@@ -27,10 +29,26 @@ INICIO:
 	li a7, 5
 	ecall
 	
+	############################
+	## Testa validacao da op  ##
+	############################
+	addi t0, x0, 1	
+	bge a0, t0, CONTINUA
+	
+ERRO:	
+	li a7, 4
+	la a0, interacao_err		#Imprime mensagem de erro
+	ecall
+	j INICIO
+	
+CONTINUA:	
+	addi t0, x0, 9
+	bge a0, t0, ERRO
+		
 	##############################
 	## Testando se eh igual a 1 ##
 	##############################
-	addi t0, x0, 1	#t0 = 1
+	addi t0, x0, 1			#t0 = 1
 	beq a0, t0, OBTEMPONTOCOMECO	#if(a0 == 1) PC = OBTEMPONTO
 	
 	##############################
@@ -150,18 +168,19 @@ REGANTULOFULL:
 	
 LOOP_RET_FULL_Y:			#Linhas	
 
-LOOP_RET_FULL_X:			#Colunas
+	LOOP_RET_FULL_X:		#Colunas
 	
-	jal ra, DESENHAPONTO		#ra = PC, PC = DESENHAPONTO
-	srli t0, t0, 2			#Divide x1 por 4
-	addi t0, t0, 1			#Pula para o proximo valor de x
-	neg t1, t1			#t1 *= -1
-	srli t1, t1, 8			#Divide x1 por 256
-	ble t0, s10, LOOP_RET_FULL_X	
-	add t0, x0, s11
-	addi t1, t1, 1
-	ble t1, s1, LOOP_RET_FULL_Y
-	j INICIO
+		jal ra, DESENHAPONTO	#ra = PC, PC = DESENHAPONTO
+		srli t0, t0, 2		#Divide x1 por 4
+		addi t0, t0, 1		#Pula para o proximo valor de x
+		neg t1, t1		#t1 *= -1
+		srli t1, t1, 8		#Divide x1 por 256
+		ble t0, s10, LOOP_RET_FULL_X	
+		add t0, x0, s11
+		addi t1, t1, 1
+		ble t1, s1, LOOP_RET_FULL_Y
+		
+		j INICIO
 	
 ################################################################################
 ################################################################################
