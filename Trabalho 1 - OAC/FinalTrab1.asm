@@ -2,6 +2,7 @@
 	menu:	       .asciz "\nMENU:\n	1.Obtem ponto\n	2.Desenha ponto\n	3.Desenha retangulo com preenchimento\n	4.Desenha retangulo sem preenchimento\n	5.Converte para negativo da imagem\n	6.Converte imagem para tons de vermelho\n	7.Carrega imagem\n	8.Encerra\n\nDigite a opcao desejada:\n"
 	cor_base:      .word 0x0000000	#Para inserir a cor desejada pelo o usuario
 	endereco_base: .word 0x10043f00	#Ultima linha e primeira coluna do bitmap
+	endereco_base2: .word 0x10040000 #Primeira linha e primeira coluna
 	interacao_x:   .asciz "Escreva o valor entre 0 e 63 para X: "
 	interacao_y:   .asciz "Escreva o valor entre 0 e 63 para Y: "
 	interacao_x1:  .asciz "Escreva o valor entre 0 e 63 para X1: "
@@ -10,7 +11,7 @@
 	interacao_y2:  .asciz "Escreva o valor enrte 0 e 63 para Y2: "
 	
 	interacao_r:   .asciz "Escreva um valor entre 0 e 255 para Red: "
-	interacao_g:   .asciz "Escreva um valor entre 0 e 255 para Gree: "
+	interacao_g:   .asciz "Escreva um valor entre 0 e 255 para Green: "
 	interacao_b:   .asciz "Escreva um valor entre 0 e 255 para Blue: "
 	
 	interacao_err: .asciz "\nERRO! Por favor, digite um valor valido! \n\n"
@@ -61,13 +62,19 @@ CONTINUA:
 	## Testando se eh igual a 3 ##
 	##############################
 	addi t0, x0, 3
-	beq a0, t0, REGANTULOFULL		#if(a0 == 3) PC = RETANGULOFULL
+	beq a0, t0, RETANGULOFULL		#if(a0 == 3) PC = RETANGULOFULL
 	
 	##############################
 	## Testando se eh igual a 4 ##
 	##############################
 	addi t0, x0, 4
 	beq a0, t0, RETANGULO_S_PREENC		#if(a0 == 4) PC = RETANGULO_S_PREENC
+	
+	##############################
+	## Testando se eh igual a 5 ##
+	##############################
+	addi t0, x0, 5
+	beq a0, t0, NEGATIVA_IMAGEM		#if(a0 == 5) PC = NEGATIVA_IMAGEM
 	
 	##############################
 	## Testando se eh igual a 8 ##
@@ -103,7 +110,7 @@ OBTEMPONTOCOMECO:
 	lw s0, 0(t3)				#Le a cor da posicao do endereco de t3
 	
 	#Instrucoes para imprimir o valor RGB na tela
-	li a7, 1
+	li a7, 34
 	add a0, x0, s0
 	ecall
 	
@@ -152,7 +159,7 @@ DESENHAPONTO:					#Para quando nao precisar ler as informacoes acima
 ################################################################################
 ################################################################################
 
-REGANTULOFULL:
+RETANGULOFULL:
 
 	jal ra, LE_X_Y_COMPOSTO			#ra = PC, PC = LE_X_Y_COMPOSTO
 	
@@ -239,6 +246,28 @@ LOOP_RET_S1_Y:					#Linhas
 ################################################################################
 ################################################################################
 ################################################################################
+
+NEGATIVA_IMAGEM:
+
+	#Operacoes aritmeticas para mostrar no bitmap
+	li t0, 0
+	li t1, 63
+		
+	lw t3, endereco_base2			#t3 = endereco_base2
+	lw s0, 0(t3)				#Le a cor da posicao do endereco de t3
+	
+	
+	
+	li s2, 0x00ffffff
+	sub s0, s2, s0 
+	jal ra, DESENHAPONTO
+		
+	j INICIO
+
+################################################################################
+################################################################################
+################################################################################
+
 
 ERRO_COORD_SIMPLES:
 	li a7, 4
