@@ -1,3 +1,11 @@
+#-------------------------------------------------------------------------
+#		Organizacao e Arquitetura de Computadores - Turma C 
+#			Trabalho 1 - Assembly RISC-V
+#
+# Nome: William Coelho da Silva		Matricula: 180029274
+# Nome: Douglas Samuel Thomazi Azevedo	Matricula: 180119109
+# Nome: 				Matricula: 
+
 .data
 	menu:	       .asciz "\nMENU:\n	1.Obtem ponto\n	2.Desenha ponto\n	3.Desenha retangulo com preenchimento\n	4.Desenha retangulo sem preenchimento\n	5.Converte para negativo da imagem\n	6.Converte imagem para tons de vermelho\n	7.Carrega imagem\n	8.Encerra\n\nDigite a opcao desejada:\n"
 	cor_base:      .word 0x0000000	#Para inserir a cor desejada pelo o usuario
@@ -96,6 +104,13 @@ CONTINUA:
 ################################################################################
 ################################################################################
 
+################################################################################
+# Funcao ObtemPonto: Carrega uma cordenada do bitmap no registraor e mostar o valor em decimal da cor no terminal
+#
+#Parametros:
+# t0 : Valor de X digitado pelo o usuario
+# t1 : Valor de Y digitado pelo o usuario
+################################################################################
 OBTEMPONTOCOMECO: 
 	jal ra, LE_X_Y_SIMPLES			#ra = PC, PC = LE_X_Y_SIMPLES
 	
@@ -123,7 +138,12 @@ OBTEMPONTOCOMECO:
 	beq x0, x0, INICIO			#Volta para o menu incial
 
 ################################################################################
-################################################################################
+# Funcao DesenhaPonto: Carrega a cordenada e a cor e desenha no bitmap
+#
+#Parametros:
+# t0 : Valor de X digitado pelo o usuario
+# t1 : Valor de Y digitado pelo o usuario
+# s0 : Valor da cor digitada pelo o usuario
 ################################################################################
 
 DESENHAPONTOCOMECO:
@@ -162,7 +182,14 @@ DESENHAPONTO:					#Para quando nao precisar ler as informacoes acima
 	jr ra					#Retorna para a funcao que a chamou
 
 ################################################################################
-################################################################################
+# Funcao ReganguloComPreenchimento: Carrega as cordenadas x0, x1, y0, y1 e a cor e desenha um regangulo completo no bitmap
+#
+#Parametros:
+# t0 : Valor de X1 digitado pelo o usuario
+# t1 : Valor de Y1 digitado pelo o usuario
+# s10: Valor de X2 digitado pelo o usuario
+# s1 : Valor de Y2 digitado pelo o usuario
+# s0: Cor desejada
 ################################################################################
 
 RETANGULOFULL:
@@ -175,7 +202,7 @@ RETANGULOFULL:
 	
 	jal ra, LE_RGB				#ra = PC, PC = LE_RGB
 
-	add s7, x0, t1
+	add s7, x0, t1				#Salva a posicao inicial de y1
 	add s11, x0, t0				#Salva a posicao inicial de x1
 	
 	
@@ -189,14 +216,21 @@ LOOP_RET_FULL_Y:				#Linhas
 		neg t1, t1			#t1 *= -1
 		srli t1, t1, 8			#Divide x1 por 256
 		ble t0, s10, LOOP_RET_FULL_X	
-		add t0, x0, s11
-		addi t1, t1, 1
+		add t0, x0, s11			#Reseta o valor incial de x1
+		addi t1, t1, 1			#y1 += 1
 		ble t1, s1, LOOP_RET_FULL_Y
 		
 		j INICIO
 	
 ################################################################################
-################################################################################
+# Funcao ReganguloSemPreenchimento: Carrega as cordenadas x0, x1, y0, y1 e a cor e desenha as bordas de um retangulo no bitmap
+#
+#Parametros:
+# t0 : Valor de X1 digitado pelo o usuario
+# t1 : Valor de Y1 digitado pelo o usuario
+# s10: Valor de X2 digitado pelo o usuario
+# s1 : Valor de Y2 digitado pelo o usuario
+# s0: Cor desejada
 ################################################################################
 
 RETANGULO_S_PREENC:
@@ -226,7 +260,7 @@ LOOP_RET_S_Y:					#Linhas
 		addi t1, t1, 1
 		ble t1, s1, LOOP_RET_S_Y
 	
-	#redefiniÃ§Ã£o das posicoes para pintar de preto dentro do retangulo 
+	#redefinição das posicoes para pintar de preto dentro do retangulo 
 	addi t0, s11, 1				#x1 += 1
 	addi t1, s7, 1				#y1 += 1
 	addi s10, s10, -1			#x2 -= 1
@@ -244,8 +278,8 @@ LOOP_RET_S1_Y:					#Linhas
 		neg t1, t1			#t1 *= -1
 		srli t1, t1, 8			#Divide x1 por 256
 		ble t0, s10, LOOP_RET_S1_X
-		add t0, x0, s11
-		addi t1, t1, 1
+		add t0, x0, s11			#Reseta o valor de X1
+		addi t1, t1, 1			#y1 += 1
 		ble t1, s1, LOOP_RET_S1_Y
 		j INICIO
 
@@ -265,7 +299,7 @@ NEGATIVA_IMAGEM:
 		sub s0, s2, s0 				#Subtrai s0 de s2 para negativar o s0
 		sw s0, 0(t3)				#Imprime a cor no bitmap
 		addi t0, t0, 1 				#incrementa t0
-		addi t3, t3, 4				#Incrementa o endereço base
+		addi t3, t3, 4				#Incrementa o endere?o base
 		blt t0, s3, LOOP			#verifica se t0 == 4096
 	j INICIO
 
@@ -288,7 +322,7 @@ IMAGEM_VERMELHA:
 		sub s0, s0, s2				#Subtrai s2 de s0 para zerar o GB
 		sw s0, 0(t3)				#Imprime a cor no bitmap
 		addi t0, t0, 1 				#incrementa t0
-		addi t3, t3, 4				#Incrementa o endereço base
+		addi t3, t3, 4				#Incrementa o endere?o base
 		blt t0, s3, LOOP2			#verifica se t0 == 4096
 	j INICIO
 
@@ -303,7 +337,7 @@ ERRO_COORD_SIMPLES:
 	j LE_X_Y_SIMPLES
 
 ################################################################################
-################################################################################
+# Funcao Le X e Y simples: Le apenas x1 e y1 e armazena em t0 e t1
 ################################################################################
 
 LE_X_Y_SIMPLES:					#Le as cordenadas X e Y 
@@ -353,7 +387,7 @@ ERRO_COORD_COMPOSTO:
 	j LE_X_Y_COMPOSTO
 
 ################################################################################
-################################################################################
+# Funcao Le X e Y composto: Le apenas x1, y1, x2, y2 e armazena em t0, t1, s10 e s1
 ################################################################################
 
 LE_X_Y_COMPOSTO:
@@ -425,7 +459,7 @@ LE_X_Y_COMPOSTO:
 	jr ra					#Retorna para a funcao que a chamou
 	
 ################################################################################
-################################################################################
+# Funcao LeRGB: Le as tres cores primarias e salva em s0
 ################################################################################
 
 LE_RGB:					
@@ -498,7 +532,7 @@ ERRO_RGB:
 	j LE_RGB
 
 ################################################################################
-################################################################################
+# Funcoes para arrumar a ordem das coordenas evitando erros
 ################################################################################
 
 VE_X:
