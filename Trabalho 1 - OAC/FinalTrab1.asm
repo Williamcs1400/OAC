@@ -4,7 +4,7 @@
 #
 # Nome: William Coelho da Silva		Matricula: 180029274
 # Nome: Douglas Samuel Thomazi Azevedo	Matricula: 180119109
-# Nome: 				Matricula: 
+# Nome: Matheus Arruda Aguiar		Matricula: 
 
 .data
 	menu:	       .asciz "\nMENU:\n	1.Obtem ponto\n	2.Desenha ponto\n	3.Desenha retangulo com preenchimento\n	4.Desenha retangulo sem preenchimento\n	5.Converte para negativo da imagem\n	6.Converte imagem para tons de vermelho\n	7.Carrega imagem\n	8.Encerra\n\nDigite a opcao desejada:\n"
@@ -284,34 +284,46 @@ LOOP_RET_S1_Y:					#Linhas
 		j INICIO
 
 ################################################################################
-################################################################################
+#Função NEGATIVA_IMAGEM: Carrega o RGB de um endereço no Bitmap e subtrai cada cor por 255 e a coloca no Bitmap
+#
+#Registradores:
+#s3: Valor total de todos os pontos no Bitmap, 64*64
+#s4: contador para parar quando chegar em 4096
+#s2: Contem o valor RGB ff ff ff
+#t3: Endereço de onde começa a negativar a cor
+#s0: Recebe o valor RGB do endereço no Bitmap
 ################################################################################
 
 NEGATIVA_IMAGEM:
 
 	li s3, 4096					#Coloca em s3 64x64
-	li t0, 0					#Redefine o x para 0
-	li t1, 0					#Redefine o y para 0
-	li s2, 0x00ffffff				##coloca em s2 o valor RGB ffffff
+	li s4, 0					#Zera o s4
+	li s2, 0x00ffffff				#coloca em s2 o valor RGB ffffff
 	lw t3, endereco_base2				#t3 = endereco_base2
 	LOOP:	
 		lw s0, 0(t3)				#Le a cor da posicao do endereco de t3
 		sub s0, s2, s0 				#Subtrai s0 de s2 para negativar o s0
 		sw s0, 0(t3)				#Imprime a cor no bitmap
-		addi t0, t0, 1 				#incrementa t0
+		addi s4, s4, 1 				#incrementa t0
 		addi t3, t3, 4				#Incrementa o endere?o base
-		blt t0, s3, LOOP			#verifica se t0 == 4096
+		blt s4, s3, LOOP			#verifica se t0 == 4096
 	j INICIO
 
 ################################################################################
-################################################################################
+#Função IMAGEM_VERMELHA: Carrega o RGB de um endereço no Bitmap, coloca o valor 00 no GB e a coloca no Bitmap
+#
+#Registradores:
+#s3: Valor total de todos os pontos no Bitmap, 64*64
+#s4: contador para parar quando chegar em 4096
+#s2: Contem o valor RGB 00 ff ff
+#t3: Endereço de onde começa a deixar a cor vermelha
+#s0: Recebe o valor RGB do endereço no Bitmap
 ################################################################################
 
 IMAGEM_VERMELHA:
 	
 	li s3, 4096					#Coloca em s3 64x64
-	li t0, 0					#Redefine o x para 0
-	li t1, 0					#Redefine o y para 0
+	li s4, 0					#Zera o s4
 	li s2, 0x0000ffff				#coloca em s2 o valor RGB 00ffff
 	lw t3, endereco_base2				#t3 = endereco_base2
 	LOOP2:	
@@ -321,9 +333,9 @@ IMAGEM_VERMELHA:
 		srli s2, s2, 16				#Move s2 4 casas para a direita
 		sub s0, s0, s2				#Subtrai s2 de s0 para zerar o GB
 		sw s0, 0(t3)				#Imprime a cor no bitmap
-		addi t0, t0, 1 				#incrementa t0
-		addi t3, t3, 4				#Incrementa o endere?o base
-		blt t0, s3, LOOP2			#verifica se t0 == 4096
+		addi s4, s4, 1 				#incrementa t0
+		addi t3, t3, 4				#Incrementa o endereco base
+		blt s4, s3, LOOP2			#verifica se t0 == 4096
 	j INICIO
 
 ################################################################################
