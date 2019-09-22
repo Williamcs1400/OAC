@@ -75,7 +75,13 @@ CONTINUA:
 	##############################
 	addi t0, x0, 5
 	beq a0, t0, NEGATIVA_IMAGEM		#if(a0 == 5) PC = NEGATIVA_IMAGEM
-	
+
+	##############################
+	## Testando se eh igual a 5 ##
+	##############################
+	addi t0, x0, 6
+	beq a0, t0, IMAGEM_VERMELHA		#if(a0 == 6) PC = IMAGEM_VERMELHA
+			
 	##############################
 	## Testando se eh igual a 8 ##
 	##############################
@@ -249,25 +255,46 @@ LOOP_RET_S1_Y:					#Linhas
 
 NEGATIVA_IMAGEM:
 
-	#Operacoes aritmeticas para mostrar no bitmap
-	li t0, 0
-	li t1, 63
-		
-	lw t3, endereco_base2			#t3 = endereco_base2
-	lw s0, 0(t3)				#Le a cor da posicao do endereco de t3
-	
-	
-	
-	li s2, 0x00ffffff
-	sub s0, s2, s0 
-	jal ra, DESENHAPONTO
-		
+	li s3, 4096					#Coloca em s3 64x64
+	li t0, 0					#Redefine o x para 0
+	li t1, 0					#Redefine o y para 0
+	li s2, 0x00ffffff				##coloca em s2 o valor RGB ffffff
+	lw t3, endereco_base2				#t3 = endereco_base2
+	LOOP:	
+		lw s0, 0(t3)				#Le a cor da posicao do endereco de t3
+		sub s0, s2, s0 				#Subtrai s0 de s2 para negativar o s0
+		sw s0, 0(t3)				#Imprime a cor no bitmap
+		addi t0, t0, 1 				#incrementa t0
+		addi t3, t3, 4				#Incrementa o endereço base
+		blt t0, s3, LOOP			#verifica se t0 == 4096
 	j INICIO
 
 ################################################################################
 ################################################################################
 ################################################################################
 
+IMAGEM_VERMELHA:
+	
+	li s3, 4096					#Coloca em s3 64x64
+	li t0, 0					#Redefine o x para 0
+	li t1, 0					#Redefine o y para 0
+	li s2, 0x0000ffff				#coloca em s2 o valor RGB 00ffff
+	lw t3, endereco_base2				#t3 = endereco_base2
+	LOOP2:	
+		lw s0, 0(t3)				#Le a cor da posicao do endereco de t3
+		lw s2, 0(t3)				#Le a cor da posicao do endereco de t3
+		slli s2, s2, 16				#Move s2 4 casas para a esquerda
+		srli s2, s2, 16				#Move s2 4 casas para a direita
+		sub s0, s0, s2				#Subtrai s2 de s0 para zerar o GB
+		sw s0, 0(t3)				#Imprime a cor no bitmap
+		addi t0, t0, 1 				#incrementa t0
+		addi t3, t3, 4				#Incrementa o endereço base
+		blt t0, s3, LOOP2			#verifica se t0 == 4096
+	j INICIO
+
+################################################################################
+################################################################################
+################################################################################
 
 ERRO_COORD_SIMPLES:
 	li a7, 4
