@@ -22,15 +22,23 @@ begin
 				 to_stdlogicvector(to_bitvector(a) sra to_integer(unsigned(b))) when op = "0111" else 		-- Desloca a b bits a direita mantendo o sinal (sra)
 				 
 				 x"00000001" when op = "0011" and signed(a) < signed(b) else 		-- Joga 1 na saida se a for menor que b levando em conta o sinal (slt)
+				 x"00000000" when op = "0011" and signed(a) >= signed(b) else 		-- Joga 0 na saida se a for maior ou igual que b levando em conta o sinal (slt)
 				 x"00000001" when op = "0100" and unsigned(a) < unsigned(b) else 	-- Joga 1 na saida se a for menor que b sem levar em conta o sinal (sltu)
+				 x"00000000" when op = "0100" and unsigned(a) >= unsigned(b) else -- Joga 0 na saida se a for maior ou igual que b sem levar em conta o sinal (sltu)
 				 
 				 std_logic_vector(signed(a) xor signed(b)) when op ="0101" else	-- XOR logico bit a bit entre a e b (xor)
 				 std_logic_vector(signed(a) or signed(b)) when op = "1000" else	-- OU logico bit a bit entre a e b (ou)
 				 std_logic_vector(signed(a) and signed(b)) when op = "1001" else	-- E logico bit a bit entre a e b (and)
 				 
 				 x"00000001" when op = "1010" and signed(a) = signed(b) else 		-- Joga 1 na saida se a for igual a b (seq)
-				 x"00000001" when op = "1011" and signed(a) /= signed(b) else 		-- Joga 1 ma saida se a for diferente b (sne)
-				 x"00000001" when op = "1100" and signed(a) >= signed(b) else 		-- Joga 1 ma saida se a for maior igual que b co sinal (sge)
-				 x"00000001" when op = "1101" and unsigned(a) >= unsigned(b);	 	-- Joga 1 ma saida se a for maior igual que b co sinal (sgeu)
+				 x"00000000" when op = "1010" and signed(a) /= signed(b) else 		-- Joga 0 na saida se a for diferente a b (seq)
 				 
+				 x"00000001" when op = "1011" and signed(a) /= signed(b) else 		-- Joga 1 na saida se a for diferente b (sne)
+				 x"00000000" when op = "1011" and signed(a) = signed(b) else 		-- Joga 0 na saida se a for igual b (sne)
+				 
+				 x"00000000" when op = "1100" and signed(a) >= signed(b) else 		-- Joga 1 na saida se a for maior igual que b com sinal (sge)
+				 x"00000001" when op = "1100" and signed(b) > signed(a) else 		-- Joga 0 na saida se b for maior que a co sinal (sge)
+				 
+				 x"00000001" when op = "1101" and unsigned(a) >= unsigned(b) else	-- Joga 1 na saida se a for maior igual que b com sinal (sgeu)
+				 x"00000000" when op = "1101" and unsigned(b) > unsigned(a);	 	-- Joga 0 na saida se b for maior que a com sinal (sgeu)
 end p_ula;
