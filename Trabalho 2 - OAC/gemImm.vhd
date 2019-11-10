@@ -13,21 +13,22 @@ architecture gemImm of gemImm is
 	signal immTipoI, immTipoS, immTipoB, immTipoU, immTipoJ : std_logic_vector(31 downto 0);
 	
 	begin
-		immTipoU <= inst(31 downto 12)& ('0','0','0','0','0','0','0','0','0','0','0','0');
-		immTipoI <= inst(31 downto 20) & ('0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');
-		immTipoJ <= inst(30 downto 21) & inst(20) & inst(19 downto 12) & inst(31) & '0' & ('0','0','0','0','0','0','0','0','0','0','0');
-		immTipoS <= inst(4 downto 0) & inst(31 downto 25) & ('0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');
-		immTipoB <= inst(11 downto 8) & inst(25 downto 30) & inst(7) & inst(31) & '0' & ('0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0');
+		immTipoU <= (signed(shift_left((resize(signed(inst(31 downto 12)),32)),12)) and x"FFFFF000");
+		--immTipoI <= resize(inst(31) & inst(31 downto 20); -- Falta so extensao
+		immTipoJ <= ('1','1','1','1','1','1','1','1','1','1','1','1') & inst(19 downto 12) & inst(20) & inst(30 downto 21) & '0'; -- Falta so extensao
+		immTipoS <= ('0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0') & inst(31 downto 25) & inst(11 downto 7); -- Falta so extensao
+		immTipoB <= ('0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0','0') & inst(7) & inst(30 downto 25) & inst(11 downto 8) & '0'; -- Falta so extensao
 		
 		
-		imm32 <= immTipoI when (signed(inst(7 downto 0))) = "00000011" else   -- tipo-I
-					immTipoI when (signed(inst(7 downto 0))) = "00001101‬" else   -- tipo-I
-					immTipoI when (signed(inst(7 downto 0))) = "01000011‬" else   -- tipo-I
-					immTipoU when (signed(inst(7 downto 0))) = "00010001" else   -- tipo-U
-					immTipoU when (signed(inst(7 downto 0))) = "00100101" else   -- tipo-U
-					immTipoS when (signed(inst(7 downto 0))) = "00010111‬" else   -- tipo-S
-					immTipoB when (signed(inst(7 downto 0))) = "00111111‬" else   -- tipo-B
-					immTipoJ when (signed(inst(7 downto 0))) = "01101111";		  -- tipo-J
+		imm32 <= immTipoU when (signed(inst(6 downto 0))) = "0010111" else   -- tipo-U op = x17
+					immTipoU when (signed(inst(6 downto 0))) = "0110111" else   -- tipo-U op = x37
+					immTipoI when (signed(inst(6 downto 0))) = "0010011" else   -- tipo-I op = x13
+					--immTipoI when (signed(inst(6 downto 0))) = "0000011‬" else   -- tipo-I op = x03
+					--immTipoI when (signed(inst(6 downto 0))) = "1100111‬" else   -- tipo-I op = x67
+					--immTipoS when (signed(inst(6 downto 0))) = "0100011‬" else   -- tipo-S op = x23
+					--immTipoB when (signed(inst(6 downto 0))) = "1100011‬";       -- tipo-B op = x63
+					immTipoJ when (signed(inst(6 downto 0))) = "1101111";   -- tipo-J op = x6F
+					
 				
 
 end gemImm;
