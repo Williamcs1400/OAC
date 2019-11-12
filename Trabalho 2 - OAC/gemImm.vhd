@@ -1,19 +1,21 @@
 library ieee;
 use ieee.std_logic_1164.all;
-use ieee.numeric_std.all;
+use ieee.numeric_std.all;    							-- Definição e uso de bibliotecas
 
-entity gemImm is
-	port (
+entity gemImm is             							-- Definição do nome do módulo
+	port (						  							-- Declaração de entradas e saídas
 		inst  : in std_logic_vector(31 downto 0); -- declaração da instrução de entrada
 		imm32 : out signed(31 downto 0)				-- declaração do imediato de saída
 	);
 end entity gemImm;
 
 architecture gemImm of gemImm is
+	-- signal : Declaração de sinais internos
 	signal immTipoR, immTipoI, immTipoS, immTipoB, immTipoU, immTipoJ : signed(31 downto 0); -- vetores auxiliares
 	signal opcode : std_logic_vector(6 downto 0);														  -- vetor para guardar o opcode da instrução
 	
 	begin
+		-- Definição do comportamento do modulo. Cada linha executa em paralelo!
 		opcode <= inst(6 downto 0);																								-- guarda os 7 bits do opcode
 		immTipoR <= x"00000000";																									-- vetor do tipo R recebe 0's (não tem imediato)
 		immTipoU <= (signed(shift_left((resize(signed(inst(31 downto 12)),32)),12)) and x"FFFFF000");		-- vetor do tipo U recebe o formato da instrução do imediato e coloca 0's nos 12 bits menos significativos (não tem extensao de sinal)
